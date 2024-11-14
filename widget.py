@@ -5,7 +5,7 @@ import datetime
 from bs4 import BeautifulSoup
 
 GITHUB_USERNAME = 'Raghav-2611'
-GITHUB_TOKEN = ''
+GITHUB_TOKEN = '' 
 
 def get_contributions():
     url = f"https://github.com/users/{GITHUB_USERNAME}/contributions"
@@ -45,14 +45,16 @@ def refresh_widget(streak, max_streak, total_contributions):
     update_label.config(text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}")
     progress_bar.coords(progress_fill, 10, 10, 10 + (streak * 3), 40)
 
+def minimize_window():
+    root.iconify() 
+
 def create_widget(streak, max_streak, total_contributions):
-    global streak_label, max_streak_label, total_contributions_label, update_label, progress_bar, progress_fill
+    global root, streak_label, max_streak_label, total_contributions_label, update_label, progress_bar, progress_fill
 
     root = tk.Tk()
     root.title("GitHub Contribution Streak")
     root.configure(bg="#e0f7fa")
 
-   
     main_frame = tk.Frame(root, bg="#ffffff", bd=2, relief="solid")
     main_frame.pack(padx=20, pady=20)
 
@@ -79,14 +81,20 @@ def create_widget(streak, max_streak, total_contributions):
     heatmap_label.pack()
     for row in range(5):
         for col in range(7):
-            heatmap_color = ["#dcedc8", "#aed581", "#7cb342", "#388e3c"][col % 4]  
+            heatmap_color = ["#dcedc8", "#aed581", "#7cb342", "#388e3c"][col % 4]  # Mock colors for activity
             tk.Frame(heatmap_frame, bg=heatmap_color, width=10, height=10).grid(row=row, column=col, padx=2, pady=2)
 
     update_label = tk.Label(main_frame, text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}", font=("Helvetica", 8), bg="#ffffff")
     update_label.pack()
 
-    refresh_button = tk.Button(main_frame, text="Refresh", command=update_widget, font=("Helvetica", 10), bg="#00796b", fg="white")
-    refresh_button.pack(pady=10)
+    button_frame = tk.Frame(main_frame, bg="#ffffff")
+    button_frame.pack(pady=10)
+    
+    minimize_button = tk.Button(button_frame, text="Minimize", command=minimize_window, font=("Helvetica", 10), bg="#b0bec5", fg="black")
+    minimize_button.pack(side="left", padx=5)
+
+    refresh_button = tk.Button(button_frame, text="Refresh", command=update_widget, font=("Helvetica", 10), bg="#00796b", fg="white")
+    refresh_button.pack(side="left", padx=5)
 
     root.mainloop()
 
