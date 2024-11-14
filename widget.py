@@ -50,33 +50,48 @@ def create_widget(streak, max_streak, total_contributions):
 
     root = tk.Tk()
     root.title("GitHub Contribution Streak")
-    root.configure(bg="#f5f5f5")
+    root.configure(bg="#e0f7fa")
 
-    canvas = tk.Canvas(root, width=400, height=150, bg="white")
-    canvas.pack()
+    # Main Frame with rounded corners
+    main_frame = tk.Frame(root, bg="#ffffff", bd=2, relief="solid")
+    main_frame.pack(padx=20, pady=20)
+
+    # Header Label
+    header_label = tk.Label(main_frame, text="GitHub Contribution Tracker", font=("Helvetica", 16, "bold"), bg="#ffffff", fg="#00796b")
+    header_label.pack(pady=10)
 
     # Labels for streak and contributions
-    streak_label = tk.Label(root, text=f"Current Streak: {streak} days", font=("Helvetica", 12), bg="#f5f5f5")
+    streak_label = tk.Label(main_frame, text=f"Current Streak: {streak} days", font=("Helvetica", 12), bg="#ffffff")
     streak_label.pack()
     
-    max_streak_label = tk.Label(root, text=f"Max Streak: {max_streak} days", font=("Helvetica", 12), bg="#f5f5f5")
+    max_streak_label = tk.Label(main_frame, text=f"Max Streak: {max_streak} days", font=("Helvetica", 12), bg="#ffffff")
     max_streak_label.pack()
 
-    total_contributions_label = tk.Label(root, text=f"Total Contributions: {total_contributions} this year", font=("Helvetica", 12), bg="#f5f5f5")
+    total_contributions_label = tk.Label(main_frame, text=f"Total Contributions: {total_contributions} this year", font=("Helvetica", 12), bg="#ffffff")
     total_contributions_label.pack()
 
-    # Progress bar
-    progress_bar = tk.Canvas(root, width=310, height=30, bg="white", bd=0, highlightthickness=0)
+    # Gradient Progress Bar for current streak
+    progress_bar = tk.Canvas(main_frame, width=310, height=30, bg="white", bd=0, highlightthickness=0)
     progress_bar.pack(pady=5)
-    progress_bar.create_rectangle(10, 10, 310, 40, outline="#7cb342", width=2)
-    progress_fill = progress_bar.create_rectangle(10, 10, 10 + (streak * 3), 40, fill="#aed581", outline="")
+    progress_bar.create_rectangle(10, 10, 310, 40, outline="#00796b", width=2)
+    progress_fill = progress_bar.create_rectangle(10, 10, 10 + (streak * 3), 40, fill="#4db6ac", outline="")
+
+    # Heatmap preview (mocked for simplicity, could represent activity levels)
+    heatmap_frame = tk.Frame(main_frame, bg="#ffffff", bd=2, relief="flat")
+    heatmap_frame.pack(pady=10)
+    heatmap_label = tk.Label(heatmap_frame, text="Contribution Heatmap", font=("Helvetica", 10), bg="#ffffff", fg="#00796b")
+    heatmap_label.pack()
+    for row in range(5):
+        for col in range(7):
+            heatmap_color = ["#dcedc8", "#aed581", "#7cb342", "#388e3c"][col % 4]  # Mock colors for activity
+            tk.Frame(heatmap_frame, bg=heatmap_color, width=10, height=10).grid(row=row, column=col, padx=2, pady=2)
 
     # Last updated time
-    update_label = tk.Label(root, text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}", font=("Helvetica", 8), bg="#f5f5f5")
+    update_label = tk.Label(main_frame, text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}", font=("Helvetica", 8), bg="#ffffff")
     update_label.pack()
 
     # Refresh button
-    refresh_button = tk.Button(root, text="Refresh", command=update_widget, font=("Helvetica", 10), bg="#388e3c", fg="white")
+    refresh_button = tk.Button(main_frame, text="Refresh", command=update_widget, font=("Helvetica", 10), bg="#00796b", fg="white")
     refresh_button.pack(pady=10)
 
     root.mainloop()
