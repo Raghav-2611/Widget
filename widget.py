@@ -53,53 +53,54 @@ def minimize_window():
     """Minimizes the widget window to the taskbar."""
     root.iconify()
 
+def close_window():
+    """Closes the widget window."""
+    root.destroy()
+
 def create_widget(streak, max_streak, total_contributions):
-    """Creates the Tkinter UI for the GitHub Contribution Tracker widget."""
+    """Creates the Tkinter UI for the GitHub Contribution Tracker widget with a macOS-like style."""
     global root, streak_label, max_streak_label, total_contributions_label, update_label, progress_bar, progress_fill
 
     root = tk.Tk()
     root.title("GitHub Contribution Streak")
-    root.configure(bg="#e0f7fa")
+    root.configure(bg="#f0f0f0") 
+    root.geometry("400x220")
+    root.overrideredirect(True) 
 
-    main_frame = tk.Frame(root, bg="#ffffff", bd=2, relief="solid")
-    main_frame.pack(padx=20, pady=20)
+    main_frame = tk.Frame(root, bg="#ffffff", bd=0, relief="solid")
+    main_frame.place(x=10, y=10, width=380, height=200)
 
-    tk.Label(main_frame, text="GitHub Contribution Tracker", font=("Helvetica", 16, "bold"), bg="#ffffff", fg="#00796b").pack(pady=10)
-
-    streak_label = tk.Label(main_frame, text=f"Current Streak: {streak} days", font=("Helvetica", 12), bg="#ffffff")
-    streak_label.pack()
-    max_streak_label = tk.Label(main_frame, text=f"Max Streak: {max_streak} days", font=("Helvetica", 12), bg="#ffffff")
-    max_streak_label.pack()
-    total_contributions_label = tk.Label(main_frame, text=f"Total Contributions: {total_contributions} this year", font=("Helvetica", 12), bg="#ffffff")
-    total_contributions_label.pack()
-
-    progress_bar = tk.Canvas(main_frame, width=310, height=30, bg="white", bd=0, highlightthickness=0)
-    progress_bar.pack(pady=5)
-    progress_bar.create_rectangle(10, 10, 310, 40, outline="#00796b", width=2)
-    progress_fill = progress_bar.create_rectangle(10, 10, 10 + (streak * 3), 40, fill="#4db6ac", outline="")
-
-    create_heatmap_preview(main_frame)
-
-    update_label = tk.Label(main_frame, text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}", font=("Helvetica", 8), bg="#ffffff")
-    update_label.pack()
+    shadow = tk.Canvas(root, width=380, height=200, bg="#f0f0f0", highlightthickness=0)
+    shadow.place(x=12, y=12)
+    shadow.create_rectangle(10, 10, 380, 200, fill="#dcdcdc", outline="")
 
     button_frame = tk.Frame(main_frame, bg="#ffffff")
-    button_frame.pack(pady=10)
-    tk.Button(button_frame, text="Minimize", command=minimize_window, font=("Helvetica", 10), bg="#b0bec5", fg="black").pack(side="left", padx=5)
-    tk.Button(button_frame, text="Refresh", command=update_contributions, font=("Helvetica", 10), bg="#00796b", fg="white").pack(side="left", padx=5)
+    button_frame.pack(anchor="nw", pady=5, padx=5)
+
+    close_button = tk.Button(button_frame, text=" ", command=close_window, bg="#ff5f57", relief="flat", width=2, height=1)
+    close_button.grid(row=0, column=0, padx=2)
+    
+    minimize_button = tk.Button(button_frame, text=" ", command=minimize_window, bg="#ffbd2e", relief="flat", width=2, height=1)
+    minimize_button.grid(row=0, column=1, padx=2)
+
+    tk.Label(main_frame, text="GitHub Contribution Tracker", font=("Helvetica", 14, "bold"), bg="#ffffff", fg="#333333").pack(pady=10)
+
+    streak_label = tk.Label(main_frame, text=f"Current Streak: {streak} days", font=("Helvetica", 11), bg="#ffffff", fg="#555555")
+    streak_label.pack()
+    max_streak_label = tk.Label(main_frame, text=f"Max Streak: {max_streak} days", font=("Helvetica", 11), bg="#ffffff", fg="#555555")
+    max_streak_label.pack()
+    total_contributions_label = tk.Label(main_frame, text=f"Total Contributions: {total_contributions} this year", font=("Helvetica", 11), bg="#ffffff", fg="#555555")
+    total_contributions_label.pack()
+
+    progress_bar = tk.Canvas(main_frame, width=300, height=20, bg="white", bd=0, highlightthickness=0)
+    progress_bar.pack(pady=10)
+    progress_bar.create_rectangle(10, 5, 300, 20, outline="#cccccc", width=1)
+    progress_fill = progress_bar.create_rectangle(10, 5, 10 + (streak * 3), 20, fill="#4db6ac", outline="")
+
+    update_label = tk.Label(main_frame, text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}", font=("Helvetica", 8), bg="#ffffff", fg="#999999")
+    update_label.pack(pady=5)
 
     root.mainloop()
-
-def create_heatmap_preview(frame):
-    """Creates a mock heatmap preview for the contribution activity."""
-    heatmap_frame = tk.Frame(frame, bg="#ffffff", bd=2, relief="flat")
-    heatmap_frame.pack(pady=10)
-    tk.Label(heatmap_frame, text="Contribution Heatmap", font=("Helvetica", 10), bg="#ffffff", fg="#00796b").pack()
-    colors = ["#dcedc8", "#aed581", "#7cb342", "#388e3c"]
-    for row in range(5):
-        for col in range(7):
-            color = colors[col % 4]
-            tk.Frame(heatmap_frame, bg=color, width=10, height=10).grid(row=row, column=col, padx=2, pady=2)
 
 if __name__ == "__main__":
     contributions_html = get_contributions_html()
