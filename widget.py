@@ -1,6 +1,3 @@
-#to do
-#make it dynamic
-
 import tkinter as tk
 from github import Github
 import requests
