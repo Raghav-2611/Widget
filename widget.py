@@ -5,9 +5,8 @@ import requests
 import datetime
 from bs4 import BeautifulSoup
 
-# Constants
 GITHUB_USERNAME = 'Raghav-2611'
-DEFAULT_REFRESH_INTERVAL = 3600000  # Default refresh every hour (in milliseconds)
+DEFAULT_REFRESH_INTERVAL = 3600000 
 
 
 class GitHubTrackerApp:
@@ -23,18 +22,14 @@ class GitHubTrackerApp:
         self.root.configure(bg="#f0f0f0")
         self.root.resizable(False, False)
 
-        # Create the menu bar
         self.create_menu()
 
-        # Create the main frame
         main_frame = tk.Frame(self.root, bg="#ffffff", bd=1, relief="solid")
         main_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
-        # Title
         tk.Label(main_frame, text="GitHub Contribution Tracker", font=("Helvetica", 16, "bold"),
                  bg="#ffffff", fg="#333333").pack(pady=5)
 
-        # Stats Labels
         self.streak_label = tk.Label(main_frame, text="Current Streak: Loading...", font=("Helvetica", 12),
                                      bg="#ffffff", fg="#555555")
         self.streak_label.pack()
@@ -45,36 +40,30 @@ class GitHubTrackerApp:
                                                   bg="#ffffff", fg="#555555")
         self.total_contributions_label.pack()
 
-        # Progress Bar
         self.progress_bar = tk.Canvas(main_frame, width=300, height=20, bg="white", bd=0, highlightthickness=0)
         self.progress_bar.pack(pady=10)
         self.progress_bar.create_rectangle(10, 5, 300, 20, outline="#cccccc", width=1)
         self.progress_fill = self.progress_bar.create_rectangle(10, 5, 10, 20, fill="#4db6ac", outline="")
 
-        # Update Button
         tk.Button(main_frame, text="Refresh Now", command=self.update_data, bg="#4db6ac", fg="white",
                   font=("Helvetica", 10), relief="flat").pack(pady=10)
 
-        # Status Label
         self.status_label = tk.Label(main_frame, text="Last updated: Never", font=("Helvetica", 9),
                                      bg="#ffffff", fg="#999999")
         self.status_label.pack()
 
-        # Start auto-refresh
         self.update_data(auto_refresh=True)
 
     def create_menu(self):
         """Create the application menu bar."""
         menu_bar = tk.Menu(self.root)
 
-        # File Menu
         file_menu = tk.Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Settings", command=self.open_settings)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.root.quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        # Help Menu
         help_menu = tk.Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="About", command=self.show_about)
         menu_bar.add_cascade(label="Help", menu=help_menu)
