@@ -5,7 +5,6 @@ import datetime
 from bs4 import BeautifulSoup
 
 GITHUB_USERNAME = 'Raghav-2611'
-GITHUB_TOKEN = '' 
 
 def get_contributions_html():
     """Fetches GitHub contribution HTML data."""
@@ -34,12 +33,18 @@ def parse_contributions(contributions_html):
             streak = 0
     return current_streak, max_streak, total_contributions
 
-def update_contributions():
+def update_contributions(auto_refresh=False):
     """Fetches and updates the contribution data in the widget."""
     contributions_html = get_contributions_html()
     if contributions_html:
         current_streak, max_streak, total_contributions = parse_contributions(contributions_html)
         refresh_widget(current_streak, max_streak, total_contributions)
+    else:
+        streak_label.config(text="Error fetching contributions.")
+        max_streak_label.config(text="")
+        total_contributions_label.config(text="")
+    if auto_refresh:
+        root.after(3600000, lambda: update_contributions(auto_refresh=True))  # Refresh every hour
 
 def refresh_widget(streak, max_streak, total_contributions):
     """Updates the widget display with new streak data."""
@@ -58,32 +63,25 @@ def close_window():
     root.destroy()
 
 def create_widget(streak, max_streak, total_contributions):
-    """Creates the Tkinter UI for the GitHub Contribution Tracker widget with a macOS-like style."""
+    """Creates the Tkinter UI for the GitHub Contribution Tracker widget."""
     global root, streak_label, max_streak_label, total_contributions_label, update_label, progress_bar, progress_fill
 
     root = tk.Tk()
-    root.title("GitHub Contribution Streak")
-    root.configure(bg="#f0f0f0") 
-    root.geometry("400x220")
-    root.overrideredirect(True) 
+    root.title("GitHub Contribution Tracker")
+    root.configure(bg="#f0f0f0")
+    root.geometry("400x240")
+    root.resizable(False, False)
 
     main_frame = tk.Frame(root, bg="#ffffff", bd=0, relief="solid")
-    main_frame.place(x=10, y=10, width=380, height=200)
-
-    shadow = tk.Canvas(root, width=380, height=200, bg="#f0f0f0", highlightthickness=0)
-    shadow.place(x=12, y=12)
-    shadow.create_rectangle(10, 10, 380, 200, fill="#dcdcdc", outline="")
+    main_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
     button_frame = tk.Frame(main_frame, bg="#ffffff")
-    button_frame.pack(anchor="nw", pady=5, padx=5)
+    button_frame.pack(anchor="nw", pady=5)
 
-    close_button = tk.Button(button_frame, text=" ", command=close_window, bg="#ff5f57", relief="flat", width=2, height=1)
-    close_button.grid(row=0, column=0, padx=2)
-    
-    minimize_button = tk.Button(button_frame, text=" ", command=minimize_window, bg="#ffbd2e", relief="flat", width=2, height=1)
-    minimize_button.grid(row=0, column=1, padx=2)
+    tk.Button(button_frame, text=" ", command=close_window, bg="#ff5f57", relief="flat", width=2, height=1).grid(row=0, column=0, padx=2)
+    tk.Button(button_frame, text=" ", command=minimize_window, bg="#ffbd2e", relief="flat", width=2, height=1).grid(row=0, column=1, padx=2)
 
-    tk.Label(main_frame, text="GitHub Contribution Tracker", font=("Helvetica", 14, "bold"), bg="#ffffff", fg="#333333").pack(pady=10)
+    tk.Label(main_frame, text="GitHub Contribution Tracker", font=("Helvetica", 14, "bold"), bg="#ffffff", fg="#333333").pack(pady=5)
 
     streak_label = tk.Label(main_frame, text=f"Current Streak: {streak} days", font=("Helvetica", 11), bg="#ffffff", fg="#555555")
     streak_label.pack()
@@ -100,6 +98,9 @@ def create_widget(streak, max_streak, total_contributions):
     update_label = tk.Label(main_frame, text=f"Last updated: {datetime.datetime.now():%Y-%m-%d %H:%M:%S}", font=("Helvetica", 8), bg="#ffffff", fg="#999999")
     update_label.pack(pady=5)
 
+    tk.Button(main_frame, text="Refresh Now", command=update_contributions, bg="#4db6ac", fg="white", relief="flat").pack(pady=5)
+
+    update_contributions(auto_refresh=True)
     root.mainloop()
 
 if __name__ == "__main__":
